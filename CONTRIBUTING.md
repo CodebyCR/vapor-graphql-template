@@ -9,5 +9,6 @@ Thanks!
 ## Maintainers
 
 - [@alexsteinerde](https://github.com/alexsteinerde)
+- [@CodebyCR](https://github.com/CodebyCR)
 
 See the [Vapor maintainers doc](https://github.com/vapor/vapor/blob/master/Docs/maintainers.md) for more information.
