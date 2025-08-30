@@ -1,7 +1,11 @@
 import Graphiti
 import Vapor
 
-struct TodoResolver {
+struct TodoResolver: Sendable, CustomDebugStringConvertible {
+    var debugDescription: String {
+        "TodoResolver"
+    }
+
     func getAllUsers(request: Request, _: NoArguments) async throws -> [User] {
         try await User.query(on: request.db).all()
     }
@@ -44,6 +48,7 @@ struct TodoResolver {
         try await todo.create(on: request.db)
         return todo
     }
+
     struct DeleteTodoArguments: Codable {
         let id: UUID
     }
@@ -54,12 +59,12 @@ struct TodoResolver {
         }
         try await todo.delete(on: request.db)
     }
-    
+
     // Tag Resolver
     func getAllTags(request: Request, _: NoArguments) async throws -> [Tag] {
         try await Tag.query(on: request.db).all()
     }
-    
+
     struct CreateTagArguments: Codable {
         let title: String
     }
@@ -69,12 +74,12 @@ struct TodoResolver {
         try await tag.create(on: request.db)
         return tag
     }
-    
+
     struct AddTagToTodoArguments: Codable {
         let todoID: UUID
         let tagID: UUID
     }
-    
+
     func addTagToTodo(request: Request, arguments: AddTagToTodoArguments) async throws {
         async let tag = try await Tag.find(arguments.tagID, on: request.db)
         async let todo = try await Todo.find(arguments.todoID, on: request.db)
