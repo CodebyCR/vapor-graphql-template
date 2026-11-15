@@ -1,7 +1,6 @@
 import FluentSQLiteDriver
 import GraphiQLVapor
-import GraphQL
-import GraphQLKit
+import Graphiti
 import Vapor
 
 // configures your application

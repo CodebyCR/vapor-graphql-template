@@ -13,8 +13,9 @@ let package = Package(
         .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
 
         // 🌐 GraphQL
-        .package(url: "https://github.com/alexsteinerde/graphql-kit.git", from: "3.0.0"), // Vapor Utilities
-        .package(url: "https://github.com/alexsteinerde/graphiql-vapor.git", from: "2.0.0"), // Web Query Page
+        .package(url: "https://github.com/GraphQLSwift/GraphQL.git", from: "4.3.0"), // GraphQL Core
+        .package(url: "https://github.com/GraphQLSwift/Graphiti.git", from: "3.1.0"), // Schema DSL
+        .package(url: "https://github.com/alexsteinerde/graphiql-vapor.git", from: "2.5.0"), // Web Query Page
     ],
     targets: [
         .target(
@@ -23,7 +24,8 @@ let package = Package(
                 .product(name: "Fluent", package: "fluent"),
                 .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
                 .product(name: "Vapor", package: "vapor"),
-                .product(name: "GraphQLKit", package: "graphql-kit"),
+                .product(name: "GraphQL", package: "GraphQL"),
+                .product(name: "Graphiti", package: "Graphiti"),
                 .product(name: "GraphiQLVapor", package: "graphiql-vapor"),
             ],
             swiftSettings: [

@@ -3,7 +3,7 @@
 [![Language](https://img.shields.io/badge/Swift-6.1-brightgreen.svg)](http://swift.org)
 [![Vapor Version](https://img.shields.io/badge/Vapor-4-F6CBCA.svg)](http://vapor.codes)
 
-This is a template that can be used to create Vapor applications that include GraphQL APIs. It's based on [GraphQL](https://github.com/GraphQLSwift/GraphQL), [Graphiti](https://github.com/GraphQLSwift/Graphiti) and helper functions from [GraphQLKit](https://github.com/alexsteinerde/graphql-kit).
+This is a template that can be used to create Vapor applications that include GraphQL APIs. It's based on [GraphQL](https://github.com/GraphQLSwift/GraphQL), [Graphiti](https://github.com/GraphQLSwift/Graphiti) and ships its own small set of Vapor and Fluent helpers in `Sources/App/GraphQL/Support` (the former [GraphQLKit](https://github.com/alexsteinerde/graphql-kit) is no longer needed).
 
 ## Example Queries:
 

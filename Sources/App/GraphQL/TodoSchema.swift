@@ -1,5 +1,5 @@
 import Foundation
-@preconcurrency import Graphiti
+import Graphiti
 import Vapor
 
 struct TodoSchemaProvider: Sendable {
