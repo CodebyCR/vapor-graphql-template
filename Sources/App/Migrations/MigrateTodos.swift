@@ -5,7 +5,8 @@ struct MigrateTodos: AsyncMigration {
         try await database.schema("todos")
             .id()
             .field("title", .string, .required)
-            .field("user_id", .uuid, .required, .references("users", "id"))
+            // Deleting a user deletes all of their todos.
+            .field("user_id", .uuid, .required, .references("users", "id", onDelete: .cascade))
             .create()
     }
 

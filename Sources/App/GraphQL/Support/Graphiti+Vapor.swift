@@ -49,13 +49,39 @@ extension Request {
         schema: Schema<Resolver, Request>,
         resolver: Resolver
     ) async throws -> Response {
-        let result = try await schema.execute(
+        var result = try await schema.execute(
             request: query.query,
             resolver: resolver,
             context: self,
             variables: query.variables ?? [:],
             operationName: query.operationName
         )
+        // Vapor's `Abort` describes itself as "Abort.404: reason". Clients get the reason as the
+        // message and the HTTP status code in `extensions`, matching how REST routes would report it.
+        result.errors = result.errors.map { error in
+            guard let abort = error.originalError as? AbortError else {
+                return error
+            }
+            var extensions = error.extensions
+            extensions["status"] = .int(Int(abort.status.code))
+            return GraphQLError(
+                message: abort.reason,
+                locations: error.locations,
+                path: error.path,
+                extensions: extensions
+            )
+        }
+        // GraphQL reports errors inside the response body with HTTP 200, so Vapor never sees them.
+        // Log them here so that resolver failures do not go unnoticed on the server.
+        for error in result.errors {
+            if error.path.elements.isEmpty {
+                // No path means the query itself was invalid: a client mistake.
+                self.logger.notice("GraphQL request rejected: \(error.message)")
+            } else {
+                let path = error.path.elements.map(\.description).joined(separator: ".")
+                self.logger.error("GraphQL resolver failed at \(path): \(error.message)")
+            }
+        }
         // `GraphQLJSONEncoder` keeps the field order of the query in the response.
         let body = try GraphQLJSONEncoder().encode(result)
         return Response(

@@ -5,7 +5,8 @@ struct MigrateUsers: AsyncMigration {
         try await database.schema("users")
             .id()
             .field("name", .string, .required)
-            .field("current_todo_id", .uuid, .references("todos", "id"))
+            // Deleting the current todo clears the reference instead of blocking the delete.
+            .field("current_todo_id", .uuid, .references("todos", "id", onDelete: .setNull))
             .field("created_at", .datetime, .required)
             .create()
     }
