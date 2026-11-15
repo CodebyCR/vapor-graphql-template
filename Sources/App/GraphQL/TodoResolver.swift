@@ -27,11 +27,12 @@ struct TodoResolver: Sendable, CustomDebugStringConvertible {
         let id: UUID
     }
 
-    func deleteUser(request: Request, arguments: DeleteUserArguments) async throws {
+    func deleteUser(request: Request, arguments: DeleteUserArguments) async throws -> Bool {
         guard let user = try await User.find(arguments.id, on: request.db) else {
             throw Abort(.notFound)
         }
         try await user.delete(on: request.db)
+        return true
     }
 
     func getAllTodos(request: Request, _: NoArguments) async throws -> [Todo] {
@@ -53,11 +54,12 @@ struct TodoResolver: Sendable, CustomDebugStringConvertible {
         let id: UUID
     }
 
-    func deleteTodo(request: Request, arguments: DeleteTodoArguments) async throws {
+    func deleteTodo(request: Request, arguments: DeleteTodoArguments) async throws -> Bool {
         guard let todo = try await Todo.find(arguments.id, on: request.db) else {
             throw Abort(.notFound)
         }
         try await todo.delete(on: request.db)
+        return true
     }
 
     // Tag Resolver
@@ -80,12 +82,13 @@ struct TodoResolver: Sendable, CustomDebugStringConvertible {
         let tagID: UUID
     }
 
-    func addTagToTodo(request: Request, arguments: AddTagToTodoArguments) async throws {
+    func addTagToTodo(request: Request, arguments: AddTagToTodoArguments) async throws -> Bool {
         async let tag = try await Tag.find(arguments.tagID, on: request.db)
         async let todo = try await Todo.find(arguments.todoID, on: request.db)
         guard let tag = try await tag, let todo = try await todo else {
             throw Abort(.notFound)
         }
         try await todo.$tags.attach(tag, on: request.db)
+        return true
     }
 }

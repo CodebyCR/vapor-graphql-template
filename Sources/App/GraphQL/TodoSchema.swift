@@ -4,8 +4,13 @@ import Vapor
 
 struct TodoSchemaProvider: Sendable {
     func get() throws -> Schema<TodoResolver, Request> {
+        // Encode and decode `Date` values as ISO 8601 strings instead of raw time intervals.
+        let coders = Coders()
+        coders.encoder.dateEncodingStrategy = .iso8601
+        coders.decoder.dateDecodingStrategy = .iso8601
+
         // Definition of our GraphQL schema.
-        let todoSchema = try Schema<TodoResolver, Request> {
+        let todoSchema = try Schema<TodoResolver, Request>(coders: coders) {
             Scalar(UUID.self)
             Scalar(Date.self)
 
@@ -46,7 +51,7 @@ struct TodoSchemaProvider: Sendable {
                     Argument("name", at: \.name)
                 }
 
-                Field("deleteTodo", at: TodoResolver.deleteUser) {
+                Field("deleteUser", at: TodoResolver.deleteUser) {
                     Argument("id", at: \.id)
                 }
 
