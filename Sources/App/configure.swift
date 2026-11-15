@@ -16,8 +16,9 @@ public func configure(_ app: Application) async throws {
     let todoSchema = try TodoSchemaProvider().get()
     app.register(graphQLSchema: todoSchema, withResolver: TodoResolver())
 
-    // Enable GraphiQL web page to send queries to the GraphQL endpoint
-    if !app.environment.isRelease {
+    // Enable GraphiQL web page to send queries to the GraphQL endpoint.
+    // `environment.isRelease` reflects the build configuration, so use the environment name instead.
+    if app.environment != .production {
         app.enableGraphiQL()
     }
 }
