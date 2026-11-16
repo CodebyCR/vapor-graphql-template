@@ -59,6 +59,12 @@ WORKDIR /app
 # Copy built executable and any staged resources from builder
 COPY --from=build --chown=vapor:vapor /staging /app
 
+# The SQLite database lives in a dedicated directory so it can be mounted as a volume
+# and survives container restarts.
+RUN mkdir -p /app/data && chown vapor:vapor /app/data
+ENV DATABASE_PATH=/app/data/db.sqlite
+VOLUME /app/data
+
 # Ensure all further commands run as the vapor user
 USER vapor:vapor
 

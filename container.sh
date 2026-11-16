@@ -9,9 +9,11 @@
 #   ./container.sh status    show whether the container is running
 #
 # Environment variables:
-#   PORT   host port to publish (default 8080)
-#   DEV    set to 1 to run in development mode, which serves GraphiQL at /
-#          (the default production mode only serves POST/GET /graphql)
+#   PORT      host port to publish (default 8080)
+#   DEV       set to 1 to run in development mode, which serves GraphiQL at /
+#             (the default production mode only serves POST/GET /graphql)
+#   DATA_DIR  host directory holding the SQLite database (default ./data);
+#             it is mounted into the container so data survives restarts
 
 set -euo pipefail
 
@@ -20,6 +22,7 @@ cd "$(dirname "$0")"
 IMAGE="vapor-graphql-template"
 NAME="vapor-graphql-template"
 PORT="${PORT:-8080}"
+DATA_DIR="${DATA_DIR:-$PWD/data}"
 APP_ENV="production"
 [[ "${DEV:-0}" == "1" ]] && APP_ENV="development"
 
@@ -53,8 +56,10 @@ start() {
     fi
 
     remove_container
-    echo "Starting container '$NAME' in $APP_ENV mode..."
+    mkdir -p "$DATA_DIR"
+    echo "Starting container '$NAME' in $APP_ENV mode (database in $DATA_DIR)..."
     container run --detach --name "$NAME" --publish "127.0.0.1:${PORT}:8080" \
+        --volume "${DATA_DIR}:/app/data" \
         "$IMAGE" serve --env "$APP_ENV" --hostname 0.0.0.0 --port 8080
 
     echo "Waiting for the server..."
